@@ -30,12 +30,27 @@ app.post("/send", async (req, res) => {
     }
 });
 
-app.post('/sendRealtime', (req, res) => {
+app.post('/company_sensors', (req, res) => {
     const data = req.body;
 
-    const ref = db.ref('items'); // Use the correct path for your Realtime Database
+    const ref = db.ref('company_sensors');
 
-    ref.push(data, (error) => {
+    ref.set(data, (error) => {
+        if (error) {
+            console.error('Error saving data to Realtime Database:', error);
+            res.status(500).json({ error: 'Data could not be saved.' });
+        } else {
+            res.status(200).json({ success: 'Data saved to Realtime Database successfully.' });
+        }
+    });
+});
+
+app.post('/consumer_sensors', (req, res) => {
+    const data = req.body;
+
+    const ref = db.ref('consumer_sensors');
+
+    ref.set(data, (error) => {
         if (error) {
             console.error('Error saving data to Realtime Database:', error);
             res.status(500).json({ error: 'Data could not be saved.' });
