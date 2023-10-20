@@ -21,6 +21,13 @@ admin.initializeApp({
 
 const firestore = admin.firestore();
 
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: 'https://node-firebase-1e1af-default-rtdb.asia-southeast1.firebasedatabase.app/',
+});
+
+const db = admin.database();
+
 app.use(express.json());
 
 app.post("/send", async (req, res) => {
@@ -37,6 +44,21 @@ app.post("/send", async (req, res) => {
         res.status(500).json({ error: "Data could not be added to Firestore." });
     }
 });
+
+app.post('/sendRealtime', (req, res) => {
+    const data = req.body;
+
+    const ref = db.ref('items');
+
+    ref.push(data, (error) => {
+        if (error) {
+            console.error('Error saving data to Realtime Database:', error);
+            res.status(500).json({ error: 'Data could not be saved.' });
+        } else {
+            res.status(200).json({ success: 'Data saved to Realtime Database successfully.' });
+        }
+        });
+    });
 
 app.use((err, _, res, __) => {
     console.error(err);
