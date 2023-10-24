@@ -17,6 +17,10 @@ const db = admin.database();
 
 app.use(express.json());
 
+// Root route
+app.get('/', (req, res) => {
+    res.send('Hello World!');
+  });
 app.post("/send", async (req, res) => {
     try {
         const data = req.body;
