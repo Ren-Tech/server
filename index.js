@@ -1,5 +1,6 @@
 const express = require("express");
 const admin = require("firebase-admin");
+
 const app = express();
 const port = 3000;
 
@@ -7,10 +8,11 @@ const serviceAccount = require("./node-service-account.json");
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: 'https://node-firebase-1e1af-default-rtdb.asia-southeast1.firebasedatabase.app/',
+    databaseURL: 'https://psmwaterquality-default-rtdb.asia-southeast1.firebasedatabase.app',
 });
 
 const firestore = admin.firestore();
+const { Timestamp } = admin.firestore;
 const db = admin.database();
 
 app.use(express.json());
@@ -19,7 +21,9 @@ app.post("/send", async (req, res) => {
     try {
         const data = req.body;
 
-        const docRef = firestore.collection("data").doc();
+        const docRef = firestore.collection("records").doc();
+
+        data.timestamp = Timestamp.now(); // Automatically generate a timestamp
 
         await docRef.set(data);
 
@@ -29,6 +33,7 @@ app.post("/send", async (req, res) => {
         res.status(500).json({ error: "Data could not be added to Firestore." });
     }
 });
+
 
 app.post('/company_sensors', (req, res) => {
     const data = req.body;
