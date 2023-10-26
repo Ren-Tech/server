@@ -22,6 +22,12 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
   });
 
+  app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*"); // Allow requests from any origin
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
+
   app.post('/sensor-data', (req, res) => {
 
     const {pH, turbidity} = req.body;
@@ -53,7 +59,7 @@ app.get('/', (req, res) => {
   });
 
   app.use(express.json());
-  
+
 app.post("/send", async (req, res) => {
     try {
         const data = req.body;
