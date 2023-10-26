@@ -17,10 +17,7 @@ const db = admin.database();
 
 app.use(express.json());
 
-// Root route
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-  });
+
 
   app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*"); // Allow requests from any origin
