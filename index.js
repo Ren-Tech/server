@@ -21,6 +21,39 @@ app.use(express.json());
 app.get('/', (req, res) => {
     res.send('Hello World!');
   });
+
+  app.post('/sensor-data', (req, res) => {
+
+    const {pH, turbidity} = req.body;
+  
+    // Input validation
+    if(!pH || !turbidity) {
+      return res.status(400).send("Invalid sensor data"); 
+    }
+  
+    // Filter sensor values
+    if(pH < 6.5 || pH > 14) {
+      return res.status(400).send("Invalid pH value");
+    }
+  
+    if(turbidity < -0 || turbidity > 50) {
+      return res.status(400).send("Invalid turbidity value");  
+    }
+  
+    // Send filtered values to Firebase
+  
+    const pHRef = db.ref('company_sensors/pH');
+    pHRef.set(pH);
+  
+    const turbidityRef = db.ref('company_sensors/turbidity');
+    turbidityRef.set(turbidity);
+  
+    res.send("Data filtered and saved");
+  
+  });
+
+  app.use(express.json());
+  
 app.post("/send", async (req, res) => {
     try {
         const data = req.body;
